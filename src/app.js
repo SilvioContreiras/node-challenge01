@@ -9,11 +9,15 @@ app.use(express.json());
 app.use(cors());
 
 const repositories = [];
-const techs =  [];
+const techs = [];
+
+// List the repositories
 
 app.get('/repositories', (request, response) => {
-  response.json({ message: 'Ola mundo'})
+  return response.json(repositories);
 });
+
+// Create a new repository
 
 app.post('/repositories', (request, response) => {
   const { title, url } =  request.body;
@@ -28,10 +32,11 @@ app.post('/repositories', (request, response) => {
 
   repositories.push(repository);
 
-  response.json(repository)
+  return response.json(repository)
 
 });
 
+//  Update a repository
 
 app.put('/repositories/:id', (request, response) => {
   const { id } = request.params;
@@ -44,15 +49,22 @@ app.put('/repositories/:id', (request, response) => {
   }
 
   const repository = {
+    id,
     title,
     url,
-    techs: techs,
+    techs,
+    likes: 0
   }
+
+  repositories[repoIndex] = repository;
+
+  return response.json(repository)
 });
 
+// Delete a repository
 
-app.delete('/repositories/id', (request, response) => {
-  const { id } = resquest.param;
+app.delete('/repositories/:id', (request, response) => {
+  const { id } = request.params;
 
   const repositoryIndex =  repositories.findIndex(repository => repository.id === id );
 
@@ -62,42 +74,43 @@ app.delete('/repositories/id', (request, response) => {
 
    repositories.splice(repositoryIndex, 1);
 
-   response.status(204).send()
+   return response.status(204).send()
 
 });
 
+//  Create a techs
 
 app.post('/repositories/:id/techs', (request, response) => {
   const { id }  = request.params;
   const { tech } = request.body;
 
-  const repositoryIndex =  repositories.findIndex(repository => repository.id === id);
+  const repoIndex =  repositories.findIndex(repository => repository.id === id);
 
-  if(repositoryIndex < 0) {
+  if(repoIndex < 0) {
     return response.status(400).json({ error: "Repository does not exists!" });
   }
 
-  const arrTechs = techs.push(tech);
 
-  repositories.techs.push(arrTechs);
+  repositories[repoIndex].techs.push(tech);
 
-  response.status(204).send();
+  return response.json(repositories[repoIndex]);
   
 });
 
+//  Feat to give like to a repository
+
 app.post('/repositories/:id/like', (request, response) => {
   const { id } = request.params;
-  const { like } = request.param;
 
-  const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+  const repoIndex = repositories.findIndex(repository => repository.id === id);
 
-  if(repositoryIndex < 0) {
+  if(repoIndex < 0) {
     return response.status(400).json({ error: 'Repository does not exists!' });
   }
   
-  repositories.likes = 1 + linke
+  repositories[repoIndex].likes++;
 
-  response.status(204).send();
+  return response.json(repositories[repoIndex]);
 
 });
 
