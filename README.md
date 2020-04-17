@@ -1,5 +1,5 @@
 # Simple nodejs api 
 
-✔ # yarn # to install packeges
+✔ #yarn# to install packeges
 
-✔ # yarn dev # to run the project
+✔ #yarn dev# to run the project
